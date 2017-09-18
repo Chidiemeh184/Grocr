@@ -49,6 +49,23 @@ class GroceryListTableViewController: UITableViewController {
     navigationItem.leftBarButtonItem = userCountBarButtonItem
     
     user = User(uid: "FakeId", email: "hungry@person.food")
+    
+    //Observing Changes and Populating the TableView with
+    //Data from Firebase
+    ref.queryOrdered(byChild: "completed").observeSingleEvent(of: .value, with: { snapshot in
+      var newItems: [GroceryItem] = []
+      
+      for item in snapshot.children {
+        let groceryItem = GroceryItem(snapshot: item as! FIRDataSnapshot) 
+        newItems.append(groceryItem)
+      }
+      
+      self.items = newItems
+      self.tableView.reloadData()
+      
+    })
+    
+    
   }
   
   // MARK: UITableView Delegate methods
@@ -75,19 +92,22 @@ class GroceryListTableViewController: UITableViewController {
   
   override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
     if editingStyle == .delete {
-      items.remove(at: indexPath.row)
+      //items.remove(at: indexPath.row)
+      let groceryItem = items[indexPath.row]
+      groceryItem.ref?.removeValue()
       tableView.reloadData()
     }
   }
     
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     guard let cell = tableView.cellForRow(at: indexPath) else { return }
-    var groceryItem = items[indexPath.row]
+    let groceryItem = items[indexPath.row]
     let toggledCompletion = !groceryItem.completed
     
     toggleCellCheckbox(cell, isCompleted: toggledCompletion)
-    groceryItem.completed = toggledCompletion
-    tableView.reloadData()
+    //groceryItem.completed = toggledCompletion
+    groceryItem.ref?.updateChildValues(["completed" : toggledCompletion])
+    //tableView.reloadData()
   }
   
   func toggleCellCheckbox(_ cell: UITableViewCell, isCompleted: Bool) {
@@ -120,8 +140,8 @@ class GroceryListTableViewController: UITableViewController {
                                     
       groceryItemRef.setValue(groceryItem.toAnyObject())
                                     
-      //self.items.append(groceryItem)
-     // self.tableView.reloadData()
+      self.items.append(groceryItem)
+      self.tableView.reloadData()
     }
     
     let cancelAction = UIAlertAction(title: "Cancel",

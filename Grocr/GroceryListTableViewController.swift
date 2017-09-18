@@ -79,7 +79,7 @@ class GroceryListTableViewController: UITableViewController {
       tableView.reloadData()
     }
   }
-  
+    
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     guard let cell = tableView.cellForRow(at: indexPath) else { return }
     var groceryItem = items[indexPath.row]

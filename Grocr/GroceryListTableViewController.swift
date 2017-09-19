@@ -49,6 +49,10 @@ class GroceryListTableViewController: UITableViewController {
     navigationItem.leftBarButtonItem = userCountBarButtonItem
     
     user = User(uid: "FakeId", email: "hungry@person.food")
+    
+    //ref.observe(.value) { (snapshot) in
+    //  print(snapshot.value)
+    //}
   }
   
   // MARK: UITableView Delegate methods
@@ -120,8 +124,8 @@ class GroceryListTableViewController: UITableViewController {
                                     
       groceryItemRef.setValue(groceryItem.toAnyObject())
                                     
-      //self.items.append(groceryItem)
-     // self.tableView.reloadData()
+      self.items.append(groceryItem)
+      self.tableView.reloadData()
     }
     
     let cancelAction = UIAlertAction(title: "Cancel",

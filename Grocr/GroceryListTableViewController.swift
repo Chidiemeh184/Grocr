@@ -63,6 +63,7 @@ class GroceryListTableViewController: UITableViewController {
       self.items = newItems
       self.tableView.reloadData()
       
+      
     })
     
     

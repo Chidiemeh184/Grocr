@@ -39,6 +39,18 @@ class GroceryListTableViewController: UITableViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    //Gets the current users count
+    userRef.observe(.value, with: { snapshot in
+      if snapshot.exists() {
+        self.userCountBarButtonItem.title = snapshot.childrenCount.description
+      }else {
+          self.userCountBarButtonItem.title = "0"
+      }
+    })
+    
+    
+    
     //Check for user and creates a User Obj so we
     //can know who loggin in
     FIRAuth.auth()?.addStateDidChangeListener({ (auth, user) in
@@ -70,10 +82,8 @@ class GroceryListTableViewController: UITableViewController {
         let groceryItem = GroceryItem(snapshot: item as! FIRDataSnapshot) 
         newItems.append(groceryItem)
       }
-      
       self.items = newItems
       self.tableView.reloadData()
-      
     })
     
     

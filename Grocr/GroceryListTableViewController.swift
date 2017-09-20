@@ -33,11 +33,22 @@ class GroceryListTableViewController: UITableViewController {
   var user: User!
   var userCountBarButtonItem: UIBarButtonItem!
   let ref = FIRDatabase.database().reference(withPath: "grocery-items")
+  let userRef = FIRDatabase.database().reference(withPath: "online")
   
   // MARK: UIViewController Lifecycle
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    //Check for user and creates a User Obj so we
+    //can know who loggin in
+    FIRAuth.auth()?.addStateDidChangeListener({ (auth, user) in
+      guard let user = user else {return}
+      self.user = User(authData: user)
+      
+      let currentUserRef = self.userRef.child(self.user.uid)
+      currentUserRef.setValue(self.user.email)
+      currentUserRef.onDisconnectRemoveValue()
+    })
     
     tableView.allowsMultipleSelectionDuringEditing = false
     
@@ -62,7 +73,6 @@ class GroceryListTableViewController: UITableViewController {
       
       self.items = newItems
       self.tableView.reloadData()
-      
       
     })
     

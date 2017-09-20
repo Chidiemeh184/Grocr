@@ -96,7 +96,7 @@ class GroceryListTableViewController: UITableViewController {
       //items.remove(at: indexPath.row)
       let groceryItem = items[indexPath.row]
       groceryItem.ref?.removeValue()
-      tableView.reloadData()
+      //tableView.reloadData()
     }
   }
     
